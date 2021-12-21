@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  backend:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - .env:/app/.env
+    ports:
+      - "8000:8000"
+
+  database:
+    image: mongo:5.0.0-rc1-focal
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb:/data/db
+
+volumes:
+  mongodb:
