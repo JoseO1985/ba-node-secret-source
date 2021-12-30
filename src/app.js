@@ -1,8 +1,7 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import { json, urlencoded } from 'body-parser';
 import { mainRouter } from './routes/main';
-import { DB_URI, PORT } from './config/secrets';
+import { PORT } from './config/secrets';
 import db from './db/connection';
 
 const app = express();
