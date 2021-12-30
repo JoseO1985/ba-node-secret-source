@@ -1,8 +1,9 @@
 import express from 'express';
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 import { json, urlencoded } from 'body-parser';
 import { mainRouter } from './routes/main';
-import { DB_URI, PORT } from "./config/secrets";
+import { DB_URI, PORT } from './config/secrets';
+import db from './db/connection';
 
 const app = express();
 
@@ -13,18 +14,9 @@ app.use(json());
 // routes setup
 app.use(mainRouter);
 
-const dbOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-}
+const startServer = () =>
+  app.listen(PORT, () => {
+    console.log(`App listening on http://localhost:${PORT}`);
+  });
 
-mongoose.connect(DB_URI, dbOptions)
-  .then(() => {
-    console.log('Database successfully connected.');
-    app.listen(PORT, () => {
-      console.log(`App listening on http://localhost:${PORT}`);
-    });
-  })
-  .catch(() => console.log('The connection with the database could not be established.'));
-
+db.connect(startServer);
