@@ -7,8 +7,10 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon --exec babel-node src/app.js",
+    "dev:start:scripts": "nodemon --exec babel-node src/scripts.js",
     "build": "babel src --out-dir dist",
     "start": "node dist/app.js",
+    "start:scripts": "node --experimental-modules dist/scripts.js",
     "test": "jest --detectOpenHandles",
     "test:coverage": "jest --detectOpenHandles --coverage"
   },
