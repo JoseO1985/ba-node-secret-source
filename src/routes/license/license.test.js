@@ -32,7 +32,7 @@ jest.mock('../../middlewares/multer/multer', () => {
 });
 
 describe('/upload-csv', () => {
-  test('returns status 200 if the uploaded file is valid', async (done) => {
+  test('returns status 200 if the uploaded file is valid', async () => {
     Upload.create.mockReturnValueOnce({
       originalname: 'partner01.csv',
       filename: '1640902140933-partner01.csv',
@@ -51,23 +51,20 @@ describe('/upload-csv', () => {
         processed: false,
         id: '61ce2dff8f33a8338474ee5d',
       });
-    done();
   });
 
-  test('returns status 400 if an error is thrown inside body function', async (done) => {
+  test('returns status 400 if an error is thrown inside body function', async () => {
     Upload.create.mockImplementation(() => {
       throw new Error();
     });
     const file = Buffer.from('file content');
     await api.post('/license/upload-csv').send({ file: file }).expect(400);
-    done();
   });
 
-  test('returns status 400 if uploaded file is invalid', async (done) => {
+  test('returns status 400 if uploaded file is invalid', async () => {
     Upload.create.mockReturnValueOnce({});
     mockUploadedFile = null;
     const file = Buffer.from('file content');
     await api.post('/license/upload-csv').send({ file: file }).expect(400).expect({ message: 'Error uploading file' });
-    done();
   });
 });

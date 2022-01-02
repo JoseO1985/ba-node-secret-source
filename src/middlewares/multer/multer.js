@@ -1,10 +1,10 @@
-import { NODE_PATH } from '../../config/secrets';
+import { UPLOAD_PATH } from '../../config/constants';
 
 const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, NODE_PATH + '/uploads/');
+    cb(null, UPLOAD_PATH);
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname);
