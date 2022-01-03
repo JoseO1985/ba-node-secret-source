@@ -1,5 +1,5 @@
 import { CronJob } from 'cron';
-import dbConnection from '../db/connection';
+import dbConnection from '../db/mongoose';
 import UploadProcessor from './UploadProcessor';
 import CSVReader from '../services/FileReader/CSVReader';
 import PDFWriter from '../services/FileWriter/PDFWriter';
@@ -23,7 +23,8 @@ export default class ScheduledTasks {
     const uploadProcessor = new UploadProcessor(csvReader, pdfWriter, emailNotifier);
 
     const task = new CronJob({
-      cronTime: '0 0 23 * * *',
+      //cronTime: '0 0/1 * * * *',
+      cronTime: '59 59 23 * * *',
       onTick: () => {
         uploadProcessor.processPendingUploads();
       },
@@ -38,7 +39,8 @@ export default class ScheduledTasks {
     const report = new Report(emailNotifier);
 
     const task = new CronJob({
-      cronTime: '0 0 23 * * *',
+      //cronTime: '0 0/1 * * * *',
+      cronTime: '59 59 23 * * *',
       onTick: () => {
         const date = new Date();
         report.sendNightlySummary(date);

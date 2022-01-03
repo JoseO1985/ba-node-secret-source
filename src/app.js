@@ -2,7 +2,7 @@ import express from 'express';
 import { json, urlencoded } from 'body-parser';
 import { mainRouter } from './routes/main';
 import { PORT } from './config/secrets';
-import db from './db/connection';
+import db from './db/mongoose';
 
 const app = express();
 
