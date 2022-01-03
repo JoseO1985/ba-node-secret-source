@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const UploadSchema = new mongoose.Schema(
   {
@@ -19,6 +19,10 @@ const UploadSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     toJSON: {
@@ -31,4 +35,4 @@ const UploadSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Upload", UploadSchema);
+export default mongoose.model('Upload', UploadSchema);
