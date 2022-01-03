@@ -34,11 +34,28 @@ export default class EmailNotifier {
     };
   }
 
+  prepareHTMLContent(html) {
+    return {
+      from: BANON_EMAIL,
+      // to: BANON_EMAIL,
+      to: 'joseras811@gmail.com',
+      subject: 'Nightly Report',
+      text: `Last Update ${new Date()}`,
+      html: html,
+    };
+  }
+
   notify(license, attachment) {
     const mail = this.prepareContent(license, attachment);
     return this.sender.sendMail(mail).catch((err) => {
-      console.log(err.message);
-      throw err.message;
+      throw err;
+    });
+  }
+
+  sendHtmlEmail(html) {
+    const mail = this.prepareHTMLContent(html);
+    return this.sender.sendMail(mail).catch((err) => {
+      throw err;
     });
   }
 }
