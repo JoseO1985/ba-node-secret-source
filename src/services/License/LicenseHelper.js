@@ -1,10 +1,12 @@
 import fs from 'fs';
 import { LICENSE_PDF_PATH } from '../../config/constants';
-
+import FileUtils from '../FileReader/Utils';
 export default class LicenseHelper {
-  static getFileFromFileSystem(email, extension = '.pdf') {
+  static async getFileFromFileSystem(email, extension = '.pdf') {
     const fileName = LicenseHelper.generateFileName(email, extension);
-    return fs.readFileSync(`${LICENSE_PDF_PATH}${fileName}`);
+    const fullPath = `${LICENSE_PDF_PATH}${fileName}`;
+    const fileExists = await FileUtils.exists(fullPath);
+    return fileExists ? fs.readFileSync(fullPath) : null;
   }
 
   static generateFileName(email, extension) {
