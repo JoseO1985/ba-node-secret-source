@@ -43,14 +43,16 @@ export default class UploadProcessor {
   async filterValidRows(parsedRows) {
     const validLicenses = parsedRows.filter((license) => EmailValidator.isValid(license.email));
     const noDuplicates = this.removeDuplicates(validLicenses);
-    const storedLicensePromises = noDuplicates.map((license) => License.findOne({ email: license.email }));
-    const storedLicenses = await Promise.all(storedLicensePromises);
+    /*const storedLicensePromises = noDuplicates.map((license) => License.findOne({ email: license.email }));
+    const storedLicenses = await Promise.all(storedLicensePromises);*/
+    const emails = noDuplicates.map((license) => license.email);
+    const storedLicenses = await License.find({ email: { $in: emails } });
     const result =
       storedLicenses.length > 0
-        ? validLicenses.filter((valid) =>
+        ? noDuplicates.filter((valid) =>
             storedLicenses.every((stored) => !stored || (stored.email !== valid.email && stored.phone !== valid.phone))
           )
-        : validLicenses;
+        : noDuplicates;
     return result;
   }
 
