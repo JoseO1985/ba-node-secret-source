@@ -1,13 +1,15 @@
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config/secrets';
+import User from '../models/User';
 
-export const auth = (req, res, next) => {
+export const auth = async (req, res, next) => {
   try {
     const token = req.headers['auth-token'];
     if (!token) return res.status(400).send('Missing token');
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    req.decoded = decoded;
+    const user = await User.findById(decoded.userId);
+    req.user = user;
     next();
   } catch (err) {
     console.log(err);
@@ -17,8 +19,8 @@ export const auth = (req, res, next) => {
 
 export const validRole = (role) => (req, res, next) => {
   try {
-    if (!req.decoded || !req.decoded.role) return res.status(401).send('Unauthorized');
-    if (req.decoded.role === role) return next();
+    if (!req.user || !req.user.role) return res.status(401).send('Unauthorized');
+    if (req.user.role === role) return next();
     return res.status(401).send('Unauthorized');
   } catch (err) {
     console.log(err);
