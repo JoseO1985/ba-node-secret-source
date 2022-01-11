@@ -12,7 +12,7 @@ export default class UploadProcessor {
 
   async processPendingUploads() {
     try {
-      //console.log('Script [processPendingUploads] started.');
+      console.log('Script [processPendingUploads] started.');
       const pendingUploads = await Upload.find({ processed: false });
       for (let file of pendingUploads) {
         const fileName = file.filename;
@@ -20,14 +20,16 @@ export default class UploadProcessor {
 
         const filteredRows = await this.filterValidRows(parsedRows);
         if (filteredRows.length > 0) {
-          const licenses = await License.insertMany(filteredRows);
+          const licenses = await License.insertMany(filteredRows, { ordered: false }).catch((err) => {
+            console.log(err);
+          });
           if (licenses) {
             await this.completeUpload(fileName);
             await this.sendLicenseEmails(licenses);
           }
         }
       }
-      //console.log('Script [processPendingUploads] ended.');
+      console.log('Script [processPendingUploads] ended.');
     } catch (err) {
       //console.log(err.message);
       throw err;
@@ -40,13 +42,22 @@ export default class UploadProcessor {
 
   async filterValidRows(parsedRows) {
     const validLicenses = parsedRows.filter((license) => EmailValidator.isValid(license.email));
-    const storedLicensePromises = validLicenses.map((license) => EmailValidator.exists(license.email));
+    const noDuplicates = this.removeDuplicates(validLicenses);
+    const storedLicensePromises = noDuplicates.map((license) => License.findOne({ email: license.email }));
     const storedLicenses = await Promise.all(storedLicensePromises);
     const result =
       storedLicenses.length > 0
-        ? validLicenses.filter((valid) => storedLicenses.every((stored) => !stored || stored.email !== valid.email))
+        ? validLicenses.filter((valid) =>
+            storedLicenses.every((stored) => !stored || (stored.email !== valid.email && stored.phone !== valid.phone))
+          )
         : validLicenses;
     return result;
+  }
+
+  removeDuplicates(parsedRows) {
+    return parsedRows.filter((rowA, idx1) =>
+      parsedRows.every((rowB, idx2) => idx1 == idx2 || (rowA.email !== rowB.email && rowA.phone !== rowB.phone))
+    );
   }
 
   async sendLicenseEmails(licenses) {
