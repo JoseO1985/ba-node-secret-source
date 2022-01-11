@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../../config/secrets";
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../../config/secrets';
 
 export default class Token {
   /**
@@ -7,8 +7,8 @@ export default class Token {
    * @param {string} userId
    * @returns {string}
    */
-  static generateToken(userId) {
-    return jwt.sign({userId}, JWT_SECRET, {expiresIn: '7d'});
+  static generateToken(userId, role) {
+    return jwt.sign({ userId, role }, JWT_SECRET, { expiresIn: '7d' });
   }
 
   /**
