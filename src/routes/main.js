@@ -10,3 +10,9 @@ mainRouter.get('/', (_, res) => {
 
 mainRouter.use('/auth', authRouter);
 mainRouter.use('/licenses', licenseRouter);
+
+mainRouter.all('*', (req, res, next) => {
+  res.status(400).send({
+    message: 'Resource not found',
+  });
+});
