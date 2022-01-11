@@ -21,10 +21,10 @@ authRouter.post('/login', async (req, res) => {
     const hashedPassword = Password.hashPassword(password);
     if (!Password.compare(password, hashedPassword)) throw new Error('Invalid password');
 
-    const token = Token.generateToken(user.id, user.role);
+    const token = Token.generateToken(user.id);
     res.status(200).json({ token, userId: user.id });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(403).json({ error: err.message });
   }
 });
 
