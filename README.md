@@ -22,6 +22,7 @@ Using Node, create an API and necessary code that fulfils the following user sto
 
 ### Acceptance Criteria
 For this exercise, we ask that the developer elaborate the acceptance criteria they deem necessary to verify that the user stories above have been fulfilled.
+[See the proposed acceptance criterias here.](acceptance-criteria.md)
 
 # Bikes Anonymous (NodeJS)
 
